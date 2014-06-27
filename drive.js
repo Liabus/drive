@@ -46,8 +46,13 @@
 
   // left: 37, up: 38, right: 39, down: 40,
   // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
-  var keys = [37, 38, 39, 40];
-
+  var keys = [
+    {key: 38, dir: 'up'},
+    {key: 40, dir: 'down'},
+    {key: 32, dir: 'down'},
+    {key: 42, dir: 'down'}
+  ];
+ 
   var drive = function drive(selector, options){
 
     //Setup scrolling intercept:
@@ -55,8 +60,12 @@
 
     function keydown(e) {
       for (var i = keys.length; i--;) {
-        if (e.keyCode === keys[i]) {
-          scroll(e);
+        if (e.keyCode === keys[i].key) {
+          if(keys[i].dir === 'up'){
+            scroll({wheelDeltaY: -100});
+          }else{
+            scroll({wheelDeltaY: 100});
+          }
           return;
         }
       }
@@ -64,8 +73,15 @@
 
     function scroll(e) {
       preventDefault(e);
+      
+      scrollPos += e.wheelDeltaY/10;
+      
+      if(scrollPos < 0) scrollPos = 0;
+      //TODO: Upper limit
+      
+      $(document.body).scrollTop(scrollPos);
 
-      //TODO: do scroll:
+      console.log(scrollPos);
     }
 
     if (window.addEventListener) {
@@ -79,7 +95,13 @@
 
     //Grab a reference to the element.
     var $el = $(selector);
-
+    
+    $el.children().each(function(i, child){
+      $(child).addClass('drive-block')
+    });
+    
+    //TODO: hide all elements under the selector, position fixed (or absolute).
+ 
     //Retrieve the height:
     var height = options.height || $el.height();
 
@@ -89,7 +111,9 @@
     var tree = {};
 
     var timeline = [];
-
+    //Keep track of the tree elements that we are currently animating, so we can apply before/after CSS.
+    var animating = {};
+ 
     //Loop through the elements:
     for(var i = 0; i < elements.length; i++){
       var el = elements[i];
@@ -100,7 +124,9 @@
       //pull out parts:
       var timeline = el.timeline;
       var animations = el.animations;
-
+      
+      var relative = timeline.relative || el.relative || false;
+      
       if(!el.name){
         el.name = 'drive-dy-' + ++count;
       }
@@ -108,8 +134,8 @@
       tree[el.name] = {
         //TODO: Check to make sure this height code works correctly:
         height: $el.height(),
-        start: timeGen(tree, timeline.relative, timeline.start),
-        end: timeGen(tree, timeline.relative, timeline.start)
+        start: timeGen(tree, relative, timeline.start),
+        end: timeGen(tree, relative, timeline.start)
       };
 
       /*

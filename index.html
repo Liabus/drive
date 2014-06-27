@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>index</title>
+  <script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="drive.js" type="text/javascript" charset="utf-8"></script>
+  <style type="text/css" media="screen">
+  
+  html {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+  }
+  .realHero {
+    height: 100%;
+    width: 100%;
+  }
+  
+  .bg1 {
+    height: 100%;
+    width: 100%;
+    background: white;
+    opacity: 0.5;
+    color: red;
+  }
+  .bg2 {
+    height: 100%;
+    width: 100%;
+    background: black;
+    opacity: 0.5;
+    text-align: right;
+    color: red;
+  }
+  
+  .drive-block {
+    position: fixed;
+    top: 0;
+  }
+  
+  </style>
+</head>
+<body>
+  
+  <div class="realHero">
+    
+    <div class="bg1">b1</div>
+    <div class="bg2">b2</div>
+    
+  </div>
+  
+  <script type="text/javascript">
+  var d = drive('.realHero', {
+    elements: [
+      {
+        name: 'bg1',
+        selector: '.bg1',
+        timeline: {
+        },
+        animations: [
+          {
+            property: 'translateX',
+            
+          }
+        ]
+      },
+      {
+        name: 'bg2',
+        selector: '.bg2',
+        timeline: {
+          relative: 'bg1'
+        },
+        animations: [
+          {
+            property: 'translateX',
+          }
+        ]
+      }
+    ]
+  });
+  </script>
+  
+</body>
+</html>
