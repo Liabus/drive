@@ -17,13 +17,47 @@
   function getAnimationsForFrame(animations, pos){
     
   };
+  
+  function preventDefault(e) {
+    e = e || window.event;
+    if (e.preventDefault){
+      e.preventDefault();
+    }
+    e.returnValue = false;  
+  };
+  
+  // left: 37, up: 38, right: 39, down: 40,
+  // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
+  var keys = [37, 38, 39, 40];
  
   var drive = function drive(selector, options){
     
     //Setup scrolling intercept:
-    $(document.body).mousewheel(function(e, delta){
-      e.preventDefault();
-    });
+    var scrollPos = 0;
+
+    function keydown(e) {
+      for (var i = keys.length; i--;) {
+        if (e.keyCode === keys[i]) {
+          scroll(e);
+          return;
+        }
+      }
+    }
+
+    function scroll(e) {
+      preventDefault(e);
+      
+      //TODO: do scroll:
+    }
+  
+    if (window.addEventListener) {
+        window.addEventListener('DOMMouseScroll', scroll, false);
+    }
+    window.onmousewheel = document.onmousewheel = scroll;
+    document.onkeydown = keydown;
+    
+    
+    
     
     //Grab a reference to the element.
     var $el = $(selector);
