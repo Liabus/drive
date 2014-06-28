@@ -51,11 +51,68 @@
     <div class="bg1">b1</div>
     <div class="bg2">b2</div>
     
+    
+    <div id="backgrounds">
+      <div class="cody-start"></div>
+      <div class="cody-delivery"></div>
+    </div>
+    
   </div>
   
   <script type="text/javascript">
   var d = drive('.realHero', {
     elements: [
+    
+      // Sample left-to-right slide animation from the background: 
+      /*
+      
+      // Slide out start when the end is reached:
+      {
+        selector: '#backgrounds .cody-start',
+        timeline: {
+          relative: 'cody-start-body.end',
+          start: 0,
+          end: 500
+        },
+        animations: [
+          {
+            property: 'translateX',
+            start: '0%',
+            end: '-100%'
+          }
+        ]
+      },
+      //Slide in when start end reached, 
+      {
+        selector: '#backgrounds .cody-delivery',
+        animations: [
+          // These utilize inline timelines for the animations, instead of relative for the entire element.
+          // Another way to do this would be to add two JSON configs for the same selector (which is allowed because these are not named).
+          {
+            timeline: {
+              relative: 'cody-start-body.end',
+              start: 0,
+              end: 500
+            },
+            property: 'translateX',
+            start: '100%',
+            end: '0%'
+          },
+          {
+            timeline: {
+              relative: 'cody-delivery-body.end',
+              start: 0,
+              end: 500
+            },
+            property: 'translateX',
+            start: '0%',
+            end: '-100%'
+          }
+        ]
+      },
+      */
+    
+    
       {
         name: 'bg1',
         selector: '.bg1',
