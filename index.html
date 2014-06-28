@@ -22,14 +22,14 @@
   }
   
   .bg1 {
-    height: 100%;
+    height: 100px;
     width: 100%;
     background: white;
     opacity: 0.5;
     color: red;
   }
   .bg2 {
-    height: 100%;
+    height: 100px;
     width: 100%;
     background: black;
     opacity: 0.5;
@@ -60,11 +60,14 @@
         name: 'bg1',
         selector: '.bg1',
         timeline: {
+          start: 0,
+          end: 'height'
         },
         animations: [
           {
-            property: 'translateX',
-            
+            property: 'translateY',
+            start: '-0%',
+            end: '-100%'
           }
         ]
       },
@@ -72,11 +75,15 @@
         name: 'bg2',
         selector: '.bg2',
         timeline: {
-          relative: 'bg1'
+          relative: 'bg1',
+          start: 0,
+          end: 'height'
         },
         animations: [
           {
-            property: 'translateX',
+            property: 'translateY',
+            start: '100%',
+            end: '0%'
           }
         ]
       }
