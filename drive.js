@@ -37,7 +37,7 @@
     function scroll(e) {
       preventDefault(e);
 
-      scrollPos += e.wheelDeltaY/10;
+      scrollPos += e.wheelDeltaY/12;
 
       if(scrollPos < 0) scrollPos = 0;
       if(scrollPos > maxHeight) scrollPos = maxHeight;
