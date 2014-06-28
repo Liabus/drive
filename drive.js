@@ -4,20 +4,20 @@
     var vendors = ['ms', 'moz', 'webkit', 'o'];
     for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
         window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
                                    || window[vendors[x]+'CancelRequestAnimationFrame'];
     }
- 
+
     if (!window.requestAnimationFrame)
         window.requestAnimationFrame = function(callback, element) {
             var currTime = new Date().getTime();
             var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
               timeToCall);
             lastTime = currTime + timeToCall;
             return id;
         };
- 
+
     if (!window.cancelAnimationFrame)
         window.cancelAnimationFrame = function(id) {
             clearTimeout(id);
@@ -59,11 +59,11 @@
 
     return active;
   };
-  
+
   function getMaxHeight(animations){
     var h = 0;
     for(var i = 0; i < animations.length; i++){
-      
+
       h = Math.max(h, animations[i].end);
     }
     return h;
@@ -85,7 +85,7 @@
     {key: 32, dir: 'down'},
     {key: 42, dir: 'down'}
   ];
- 
+
   var drive = function drive(selector, options){
     
     //DRM:
@@ -93,7 +93,7 @@
     
     //Setup scrolling intercept:
     var scrollPos = 0;
-    
+
     var maxHeight = 0;
 
     function keydown(e) {
@@ -111,29 +111,29 @@
 
     function scroll(e) {
       preventDefault(e);
-      
+
       scrollPos += e.wheelDeltaY/10;
-      
+
       if(scrollPos < 0) scrollPos = 0;
       if(scrollPos > maxHeight) scrollPos = maxHeight;
     };
-    
+
     if (window.addEventListener) {
         window.addEventListener('DOMMouseScroll', scroll, false);
     }
     window.onmousewheel = document.onmousewheel = scroll;
     document.onkeydown = keydown;
-    
+
 
     //Grab a reference to the element.
     var $el = $(selector);
-    
+
     $el.children().each(function(i, child){
       $(child).addClass('drive-block')
     });
-    
+
     //TODO: hide all elements under the selector, position fixed (or absolute).
- 
+
     //Retrieve the height:
     var height = options.height || $el.height();
 
@@ -145,7 +145,7 @@
     var timeline = [];
     //Keep track of the tree elements that we are currently animating, so we can apply before/after CSS.
     var animating = {};
- 
+
     //Loop through the elements:
     for(var i = 0; i < elements.length; i++){
       var el = elements[i];
@@ -154,11 +154,11 @@
 
       //pull out parts:
       var animations = el.animations;
-      
+
       var tl = el.timeline;
-      
+
       var relative = tl.relative || el.relative || false;
-      
+
       if(!el.name){
         el.name = 'drive-dy-' + ++count;
       }
@@ -169,21 +169,10 @@
         start: timeGen(tree, relative, tl.start, $el),
         end: timeGen(tree, relative, tl.end, $el)
       };
-      
+
       tree[el.name] = t;
 
-      /*
-      // TODO: Do we add the selector to the tree?
-      if(!el.selector) {
-        tree[el.name].selector = el.selector;
-      }*/
-
       //Loop through the animations:
-
-      // Check if an animation had been inserted
-      var inserted = false;
-
-      // Loop through the animations
       for(var j = 0; j < animations.length; j++){
         //Just push, we can sort later:
         timeline.push({
@@ -195,40 +184,46 @@
         });
       };
     };
-    
+
     maxHeight = getMaxHeight(timeline);
-    
-    
+
+
     function animationLoop(){
       requestAnimationFrame(animationLoop);
-      
+
       var anims = getAnimationsForFrame(timeline, scrollPos);
       var percent = 0;
       var lc = '';
-      
+
       for(var i = 0; i < anims.length; i++){
         var an = anims[i];
-        
+
         percent = (scrollPos) / (an.end - an.start);
         lc = an.animation.property.toLowerCase();
-        
+
         var unit = an.animation.start.slice(-1);
-        
+
         var sv = parseInt(an.animation.start);
         var ev = parseInt(an.animation.end);
         var diff = sv - ev;
-        var neg = an.animation.start.charAt(0) === '-' ? true : false;
-        
+        // Don't need the neg
+        //var neg = an.animation.start.charAt(0) === '-' ? true : false;
+
+        /// So for things that start w/ 100, 100 - (0 * 100) = 100
+        // And for 0 starts, 0 - (0 * -100) = 0, but still ends up in the right place
+        var position = sv - (percent * diff);
+
         //Generic Translatey/scroll property
         if(lc === 'translatey' || lc === 'scroll'){
-          an.$.css('transform', 'translateY(' + (neg ? '-' : '') + (percent * diff) + unit + ')');
+          console.log(anims[i].element.name + ' translateY(' + position + unit + ')');
+          an.$.css('transform', 'translateY(' + position + unit + ')');
         }
       }
-      
+
     };
-    
+
     requestAnimationFrame(animationLoop);
-    
+
 
     return 'smile';
 
