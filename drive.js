@@ -1,81 +1,6 @@
-//requestAnimationFrame Shim:
-(function() {
-    var lastTime = 0;
-    var vendors = ['ms', 'moz', 'webkit', 'o'];
-    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
-                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
-    }
-
-    if (!window.requestAnimationFrame)
-        window.requestAnimationFrame = function(callback, element) {
-            var currTime = new Date().getTime();
-            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
-              timeToCall);
-            lastTime = currTime + timeToCall;
-            return id;
-        };
-
-    if (!window.cancelAnimationFrame)
-        window.cancelAnimationFrame = function(id) {
-            clearTimeout(id);
-        };
-}());
-
-
 (function(global){
 
   var count = 0;
-
-  function timeGen(tree, relTo, val, $el){
-    if(val === 'height'){
-      return $el.height();
-    };
-    if(!relTo || !tree[relTo]) return val;
-    var vals = relTo.split('.');
-    var t = tree[vals[0]];
-    var type = 'start';
-    if(vals.length > 1){
-      type = vals[1];
-    }
-    return t[type] + val;
-  };
-
-  //Animations should be the timeline. Pos is the current scroll position:
-  function getAnimationsForFrame(animations, pos){
-
-    // Array of active animations
-    var active = [];
-
-    // Find the active animations
-    for(var i = 0; i < animations.length; i++){
-      // If the position is within the range of animation
-      if(animations[i].start <= pos && animations[i].end >= pos) {
-        active.push(animations[i]);
-      }
-    }
-
-    return active;
-  };
-
-  function getMaxHeight(animations){
-    var h = 0;
-    for(var i = 0; i < animations.length; i++){
-
-      h = Math.max(h, animations[i].end);
-    }
-    return h;
-  };
-
-  function preventDefault(e) {
-    e = e || window.event;
-    if (e.preventDefault){
-      e.preventDefault();
-    }
-    e.returnValue = false;
-  };
 
   // left: 37, up: 38, right: 39, down: 40,
   // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
@@ -100,9 +25,9 @@
       for (var i = keys.length; i--;) {
         if (e.keyCode === keys[i].key) {
           if(keys[i].dir === 'up'){
-            scroll({wheelDeltaY: -100});
+            scroll({wheelDeltaY: -200});
           }else{
-            scroll({wheelDeltaY: 100});
+            scroll({wheelDeltaY: 200});
           }
           return;
         }
@@ -206,8 +131,6 @@
         var sv = parseInt(an.animation.start);
         var ev = parseInt(an.animation.end);
         var diff = sv - ev;
-        // Don't need the neg
-        //var neg = an.animation.start.charAt(0) === '-' ? true : false;
 
         /// So for things that start w/ 100, 100 - (0 * 100) = 100
         // And for 0 starts, 0 - (0 * -100) = 0, but still ends up in the right place
@@ -215,7 +138,6 @@
 
         //Generic Translatey/scroll property
         if(lc === 'translatey' || lc === 'scroll'){
-          console.log(anims[i].element.name + ' translateY(' + position + unit + ')');
           an.$.css('transform', 'translateY(' + position + unit + ')');
         }
       }
@@ -228,6 +150,60 @@
     return 'smile';
 
   };
+  
+  
+  function applyStyle(){
+    
+  };
+  
+  
+  function timeGen(tree, relTo, val, $el){
+    if(val === 'height'){
+      return $el.height();
+    };
+    if(!relTo || !tree[relTo]) return val;
+    var vals = relTo.split('.');
+    var t = tree[vals[0]];
+    var type = 'start';
+    if(vals.length > 1){
+      type = vals[1];
+    }
+    return t[type] + val;
+  };
+
+  //Animations should be the timeline. Pos is the current scroll position:
+  function getAnimationsForFrame(animations, pos){
+
+    // Array of active animations
+    var active = [];
+
+    // Find the active animations
+    for(var i = 0; i < animations.length; i++){
+      // If the position is within the range of animation
+      if(animations[i].start <= pos && animations[i].end >= pos) {
+        active.push(animations[i]);
+      }
+    }
+
+    return active;
+  };
+
+  function getMaxHeight(animations){
+    var h = 0;
+    for(var i = 0; i < animations.length; i++){
+
+      h = Math.max(h, animations[i].end);
+    }
+    return h;
+  };
+
+  function preventDefault(e) {
+    e = e || window.event;
+    if (e.preventDefault){
+      e.preventDefault();
+    }
+    e.returnValue = false;
+  };
 
 
 
@@ -236,3 +212,29 @@
   global.drive = drive;
 
 })(window);
+
+//requestAnimationFrame Shim:
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());

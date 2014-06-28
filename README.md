@@ -1,6 +1,11 @@
 Welcome to drive.js
 ---
 
+Requires:
+- jQuery
+- Knowledge of the API
+- JS Objects out your ass
+
       ...,
       ......,
        ........
