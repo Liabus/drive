@@ -177,7 +177,6 @@
 
 
   function applyStyle($el, animType, prop, position, unit){
-    
     if(animType){
       if(animType === 'transform'){
         $el.css('transform', prop + '(' + position + unit + ')');
