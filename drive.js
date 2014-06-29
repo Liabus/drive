@@ -12,10 +12,10 @@
   ];
 
   var drive = function drive(selector, options){
-    
+
     //DRM:
     var _0xc5e7=["\x6C\x69\x61\x62\x75\x73\x2D","\x69\x6E\x64\x65\x78\x4F\x66","\x63\x6F\x6D\x70\x61\x6E\x79","\x49\x6E\x76\x61\x6C\x69\x64\x20\x53\x74\x61\x72\x74\x75\x70\x20\x43\x6F\x6E\x66\x69\x67\x75\x72\x61\x74\x69\x6F\x6E"];if(options[_0xc5e7[2]][_0xc5e7[1]](_0xc5e7[0])!==0){throw _0xc5e7[3];return ;} ;
-    
+
     //Setup scrolling intercept:
     var scrollPos = 0;
 
@@ -120,6 +120,9 @@
       var percent = 0;
       var lc = '';
 
+      // Holds the composited transform calls
+      var animCalls = [];
+
       for(var i = 0; i < anims.length; i++){
         var an = anims[i];
 
@@ -136,10 +139,45 @@
         // And for 0 starts, 0 - (0 * -100) = 0, but still ends up in the right place
         var position = sv - (percent * diff);
 
-        //Generic Translatey/scroll property
-        if(lc === 'translatey' || lc === 'scroll'){
-          an.$.css('transform', 'translateY(' + position + unit + ')');
+        var animType = undefined;
+
+        switch(lc) {
+        case 'translatey':
+        case 'scroll':
+          animType = 'translateY';
+          break;
+        case 'translatex':
+          animType = 'translateX';
+          break;
         }
+
+
+        // More generic animation function
+        if(animType !== undefined) {
+          if(!animCalls[an.element.selector]) {
+            animCalls[an.element.selector] = {
+              selector: $(an.element.selector),
+              call: animType + '(' + position + unit + ')'
+            };
+          }
+          else {
+            animCalls[an.element.selector].call += ' ' + animType + '(' + position + unit + ')';
+          }
+
+          console.log(animCalls);
+          debugger;
+
+          /*an.$.css('transform', animType + '(' + position + unit + ')');*/
+        }
+
+        //Generic Translatey/scroll property
+        /*if(lc === 'translatey' || lc === 'scroll'){
+          an.$.css('transform', 'translateY(' + position + unit + ')');
+        }*/
+      }
+
+      for(var anims in animCalls) {
+        anims.selector.css('transform', anims.call);
       }
 
     };
@@ -148,18 +186,21 @@
 
 
     return 'smile';
+  };
+
+
+  function applyStyle(){
 
   };
-  
-  
-  function applyStyle(){
-    
-  };
-  
-  
+
+
   function timeGen(tree, relTo, val, $el){
     if(val === 'height'){
       return $el.height();
+    };
+
+    if(val === 'width') {
+      return $el.width();
     };
     if(!relTo || !tree[relTo]) return val;
     var vals = relTo.split('.');
