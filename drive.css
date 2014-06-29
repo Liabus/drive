@@ -1,3 +1,7 @@
+.drive-parent {
+  overflow: hidden;
+}
+
 .drive-block {
   position: fixed;
   top: 0;

@@ -37,7 +37,7 @@
     function scroll(e) {
       preventDefault(e);
 
-      scrollPos += e.wheelDeltaY/12;
+      scrollPos += -1 * (e.wheelDeltaY/12);
 
       if(scrollPos < 0) scrollPos = 0;
       if(scrollPos > maxHeight) scrollPos = maxHeight;
@@ -52,6 +52,7 @@
 
     //Grab a reference to the element.
     var $el = $(selector);
+    $el.addClass('drive-parent');
 
     $el.children().each(function(i, child){
       $(child).addClass('drive-block')
@@ -120,11 +121,7 @@
     function animationLoop(){
       requestAnimationFrame(animationLoop);
 
-      // Clear out the last frames
-      //FIXME: Best way to do this?
-      for(var i = 0; i < prevActive.length; i++) {
-        prevActive[i].$.css('display', 'none');
-      }
+      // TODO: Clear out the last frames
 
       var anims = getAnimationsForFrame(timeline, scrollPos);
       var percent = 0;
@@ -166,8 +163,8 @@
             prop = 'translateX';
             animType = 'transform';
             break;
-          case 'opacity':
-            prop = 'opacity';
+          default:
+            prop = an.animation.property;
             break;
         }
 
@@ -209,8 +206,6 @@
     }else{
        $el.css(prop, position + unit);
     }
-    // Show things that are being animated
-    $el.css('display', 'block');
   };
 
 
