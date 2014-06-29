@@ -57,7 +57,7 @@
       $(child).addClass('drive-block')
     });
 
-    //TODO: hide all elements under the selector, position fixed (or absolute).
+    //TODO: keep track of animating elements, change display values (or visibility) based on if we are animating or not.
 
     //Retrieve the height:
     var height = options.height || $el.height();
@@ -121,16 +121,13 @@
       var lc = '';
 
       // Holds the composited transform calls
-      var animCalls = [];
+      var animCalls = {};
 
       for(var i = 0; i < anims.length; i++){
         var an = anims[i];
 
         percent = (scrollPos) / (an.end - an.start);
         lc = an.animation.property.toLowerCase();
-
-        console.log(an.animation.start.slice(-1));
-        debugger;
         var unit = an.animation.start.slice(-1);
 
         // For cases where there is no units
@@ -146,33 +143,29 @@
         // And for 0 starts, 0 - (0 * -100) = 0, but still ends up in the right place
         var position = sv - (percent * diff);
 
-        var animType = undefined;
+        var animType = '';
+        var prop = '';
 
         switch(lc) {
-        case 'translatey':
-        case 'scroll':
-          animType = 'translateY';
-          break;
-        case 'translatex':
-          animType = 'translateX';
-          break;
-        case 'opacity':
-          animType = 'opacity';
-          break;
+          case 'translatey':
+          case 'scroll':
+            prop = 'translateY';
+            animType = 'transform';
+            break;
+          case 'translatex':
+            prop = 'translateX';
+            animType = 'transform';
+            break;
+          case 'opacity':
+            prop = 'opacity';
+            break;
+        }
+        
+        if(prop){
+          applyStyle(an.$, animType, prop, position, unit);
         }
 
-
-        // More generic animation function
-        if(animType !== undefined) {
-          if(!animCalls[an.element.selector]) {
-            animCalls[an.element.selector] = animType + '(' + position + unit + ')';
-          }
-          else {
-            animCalls[an.element.selector] += ' ' + animType + '(' + position + unit + ')';
-          }
-          console.log(animCalls[an.element.selector]);
-          an.$.css('transform', animCalls[an.element.selector]);
-        }
+        
       }
     };
 
@@ -183,8 +176,15 @@
   };
 
 
-  function applyStyle(){
-
+  function applyStyle($el, animType, prop, position, unit){
+    
+    if(animType){
+      if(animType === 'transform'){
+        $el.css('transform', prop + '(' + position + unit + ')');
+      }
+    }else{
+       $el.css(prop, position + unit);
+    }
   };
 
 
