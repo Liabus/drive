@@ -129,10 +129,12 @@
         percent = (scrollPos) / (an.end - an.start);
         lc = an.animation.property.toLowerCase();
 
+        console.log(an.animation.start.slice(-1));
+        debugger;
         var unit = an.animation.start.slice(-1);
 
         // For cases where there is no units
-        if(!isNaN(parseInt(unit)) {
+        if(!isNaN(parseInt(unit))) {
           unit = '';
         }
 
@@ -163,27 +165,14 @@
         // More generic animation function
         if(animType !== undefined) {
           if(!animCalls[an.element.selector]) {
-            animCalls[an.element.selector] = {
-              //FIXME: How do we pass the selector to the for loop at the end
-              selector: $(an.element.selector),
-              call: animType + '(' + position + unit + ')'
-            };
+            animCalls[an.element.selector] = animType + '(' + position + unit + ')';
           }
           else {
-            animCalls[an.element.selector].call += ' ' + animType + '(' + position + unit + ')';
+            animCalls[an.element.selector] += ' ' + animType + '(' + position + unit + ')';
           }
-          console.log(animCalls);
-          /*an.$.css('transform', animType + '(' + position + unit + ')');*/
+          console.log(animCalls[an.element.selector]);
+          an.$.css('transform', animCalls[an.element.selector]);
         }
-
-        //Generic Translatey/scroll property
-        /*if(lc === 'translatey' || lc === 'scroll'){
-          an.$.css('transform', 'translateY(' + position + unit + ')');
-        }*/
-      }
-
-      for(var anims in animCalls) {
-        anims.selector.css('transform', anims.call);
       }
     };
 
