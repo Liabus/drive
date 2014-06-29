@@ -100,13 +100,24 @@
 
       //Loop through the animations:
       for(var j = 0; j < animations.length; j++){
+        
+        var tl = {
+          start: t.start,
+          end: t.end
+        };
+        
+        if(animations[j].timeline){
+          tl.start = timeGen(tree, animations[j].timeline.relative, animations[j].timeline.start, $el);
+          tl.end = timeGen(tree, animations[j].timeline.relative, animations[j].timeline.end, $el);
+        }
+        
         //Just push, we can sort later:
         timeline.push({
           $: $el,
           element: el,
           animation: animations[j],
-          start: t.start,
-          end: t.end
+          start: tl.start,
+          end: tl.end
         });
       };
     };
@@ -217,8 +228,9 @@
     if(val === 'width') {
       return $el.width();
     };
-    if(!relTo || !tree[relTo]) return val;
+    if(!relTo) return val;
     var vals = relTo.split('.');
+    if(!tree[vals[0]]) return val;
     var t = tree[vals[0]];
     var type = 'start';
     if(vals.length > 1){
