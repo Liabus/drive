@@ -112,9 +112,19 @@
 
     maxHeight = getMaxHeight(timeline);
 
+    /* An array to keep track of elements that
+       were active to hide them when they go out
+       of frame */
+    var prevActive = [];
 
     function animationLoop(){
       requestAnimationFrame(animationLoop);
+
+      // Clear out the last frames
+      //FIXME: Best way to do this?
+      for(var i = 0; i < prevActive.length; i++) {
+        prevActive[i].$.css('display', 'none');
+      }
 
       var anims = getAnimationsForFrame(timeline, scrollPos);
       var percent = 0;
@@ -165,6 +175,9 @@
           applyStyle(an.$, animType, prop, position, unit);
         }
       }
+
+      // Keep track of the current animations
+      prevActive = anims;
     };
 
     requestAnimationFrame(animationLoop);
@@ -196,6 +209,8 @@
     }else{
        $el.css(prop, position + unit);
     }
+    // Show things that are being animated
+    $el.css('display', 'block');
   };
 
 

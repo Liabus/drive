@@ -22,7 +22,11 @@
     width: 100%;
   }
 
-  .bg1, .bg2, .bg3 {
+  .realHero * {
+    display: none;
+  }
+
+  .bg1, .bg2, .bg3, .bg4 {
     font-size: 4em;
     height: 100%;
     width: 100%;
@@ -48,6 +52,7 @@
     <div class="bg1">b1</div>
     <div class="bg2">b2</div>
     <div class="bg3">b3</div>
+    <div class="bg4">b4</div>
 
 
     <div id="backgrounds">
@@ -168,6 +173,21 @@
             start: '1',
             end: '0'
           }
+        ]
+      },
+      {
+        name: 'bg4',
+        selector: '.bg4',
+        timeline: {
+          start: 300,
+          end: 'height'
+        },
+        animations: [
+          {
+            property: 'translateY',
+            start: '100%',
+            end: '50%'
+          },
         ]
       }
     ]
