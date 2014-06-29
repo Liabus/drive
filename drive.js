@@ -131,6 +131,11 @@
 
         var unit = an.animation.start.slice(-1);
 
+        // For cases where there is no units
+        if(!isNaN(parseInt(unit)) {
+          unit = '';
+        }
+
         var sv = parseInt(an.animation.start);
         var ev = parseInt(an.animation.end);
         var diff = sv - ev;
@@ -149,6 +154,9 @@
         case 'translatex':
           animType = 'translateX';
           break;
+        case 'opacity':
+          animType = 'opacity';
+          break;
         }
 
 
@@ -156,6 +164,7 @@
         if(animType !== undefined) {
           if(!animCalls[an.element.selector]) {
             animCalls[an.element.selector] = {
+              //FIXME: How do we pass the selector to the for loop at the end
               selector: $(an.element.selector),
               call: animType + '(' + position + unit + ')'
             };
@@ -163,10 +172,7 @@
           else {
             animCalls[an.element.selector].call += ' ' + animType + '(' + position + unit + ')';
           }
-
           console.log(animCalls);
-          debugger;
-
           /*an.$.css('transform', animType + '(' + position + unit + ')');*/
         }
 
@@ -179,7 +185,6 @@
       for(var anims in animCalls) {
         anims.selector.css('transform', anims.call);
       }
-
     };
 
     requestAnimationFrame(animationLoop);
