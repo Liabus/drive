@@ -160,17 +160,14 @@
             prop = 'opacity';
             break;
         }
-        
+
         if(prop){
           applyStyle(an.$, animType, prop, position, unit);
         }
-
-        
       }
     };
 
     requestAnimationFrame(animationLoop);
-
 
     return 'smile';
   };
@@ -179,7 +176,22 @@
   function applyStyle($el, animType, prop, position, unit){
     if(animType){
       if(animType === 'transform'){
-        $el.css('transform', prop + '(' + position + unit + ')');
+
+        var transf = '';
+
+        if($el.css('transform')) {
+          //Get the matrix
+          var matrix = $el.css('transform');
+          var values = matrix.split(',');
+
+          if(parseInt(values[4]) > 0 && prop !== 'translateX') {
+            transf = 'translateX(' + parseInt(values[4]) + 'px) ';
+          }else if(parseInt(values[5]) > 0 && prop !== 'translateY') {
+            transf = 'translateY(' + parseInt(values[5]) + 'px) ';
+          }
+        }
+
+        $el.css('transform', transf + prop + '(' + position + unit + ')');
       }
     }else{
        $el.css(prop, position + unit);
