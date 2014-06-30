@@ -104,17 +104,17 @@
 
       //Loop through the animations:
       for(var j = 0; j < animations.length; j++){
-        
+
         var tl = {
           start: t.start,
           end: t.end
         };
-        
+
         if(animations[j].timeline){
           tl.start = timeGen(tree, animations[j].timeline.relative, animations[j].timeline.start, $el);
           tl.end = timeGen(tree, animations[j].timeline.relative, animations[j].timeline.end, $el);
         }
-        
+
         //Just push, we can sort later:
         timeline.push({
           $: $el,
@@ -193,7 +193,7 @@
     };
 
     requestAnimationFrame(animationLoop);
-    
+
     console.log(timeline);
 
     return 'smile';
@@ -231,6 +231,12 @@
       var height = $el.height();
       var width = $el.width();
       //Eval is evil, but don't be stupid:
+
+      var indHeight = val.indexOf('height');
+      if(indHeight > -1) {
+        return eval(val.substring(0, indHeight) + $el.height() + val.substring(indHeight + 6, val.length));
+      }
+
       val = eval(val);
     }
     if(!relTo) return val;
