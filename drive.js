@@ -11,6 +11,10 @@
     {key: 42, dir: 'down'}
   ];
 
+  /*
+   * DRIVE INITIALIZER
+   * =================
+   */
   var drive = function drive(selector, options){
 
     //DRM:
@@ -25,9 +29,9 @@
       for (var i = keys.length; i--;) {
         if (e.keyCode === keys[i].key) {
           if(keys[i].dir === 'up'){
-            scroll({wheelDeltaY: -200});
-          }else{
             scroll({wheelDeltaY: 200});
+          }else{
+            scroll({wheelDeltaY: -200});
           }
           return;
         }
@@ -189,6 +193,8 @@
     };
 
     requestAnimationFrame(animationLoop);
+    
+    console.log(timeline);
 
     return 'smile';
   };
@@ -221,13 +227,12 @@
 
 
   function timeGen(tree, relTo, val, $el){
-    if(val === 'height'){
-      return $el.height();
-    };
-
-    if(val === 'width') {
-      return $el.width();
-    };
+    if(typeof val === 'string'){
+      var height = $el.height();
+      var width = $el.width();
+      //Eval is evil, but don't be stupid:
+      val = eval(val);
+    }
     if(!relTo) return val;
     var vals = relTo.split('.');
     if(!tree[vals[0]]) return val;
