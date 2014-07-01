@@ -150,8 +150,9 @@
         name: 'bg3',
         selector: '.bg3',
         timeline: {
+          relative: 'bg1.end',
           start: 0,
-          end: 'height'
+          end: '110%'
         },
         animations: [
           {
@@ -167,7 +168,7 @@
           {
             property: 'opacity',
             start: '1',
-            end: '0'
+            end: '0.5'
           }
         ]
       },

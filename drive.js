@@ -22,6 +22,7 @@
 
     //Setup scrolling intercept:
     var scrollPos = 0;
+    var tweenPos = 0;
 
     var maxHeight = 0;
 
@@ -115,6 +116,8 @@
           tl.end = timeGen(tree, animations[j].timeline.relative, animations[j].timeline.end, $el);
         }
 
+        //.log(tl);
+
         //Just push, we can sort later:
         timeline.push({
           $: $el,
@@ -136,9 +139,16 @@
     function animationLoop(){
       requestAnimationFrame(animationLoop);
 
+      //Tweening
+      //Calculate difference between scrollPos and tweenPos;
+      //Arb max scroll px at one time
+      var scrollDiff = (scrollPos - tweenPos) * 0.5;
+
+      tweenPos += scrollDiff;
+
       // TODO: Clear out the last frames
 
-      var anims = getAnimationsForFrame(timeline, scrollPos);
+      var anims = getAnimationsForFrame(timeline, tweenPos);
       var percent = 0;
       var lc = '';
 
@@ -148,7 +158,7 @@
       for(var i = 0; i < anims.length; i++){
         var an = anims[i];
 
-        percent = (scrollPos) / (an.end - an.start);
+        percent = (tweenPos - an.start) / (an.end - an.start);
         lc = an.animation.property.toLowerCase();
         var unit = an.animation.start.slice(-1);
 
@@ -157,8 +167,8 @@
           unit = '';
         }
 
-        var sv = parseInt(an.animation.start);
-        var ev = parseInt(an.animation.end);
+        var sv = parseFloat(an.animation.start);
+        var ev = parseFloat(an.animation.end);
         var diff = sv - ev;
 
         /// So for things that start w/ 100, 100 - (0 * 100) = 100
@@ -227,26 +237,40 @@
 
 
   function timeGen(tree, relTo, val, $el){
+
+    // So if the val includes a height or width
     if(typeof val === 'string'){
-      var height = $el.height();
-      var width = $el.width();
-      //Eval is evil, but don't be stupid:
-
-      var indHeight = val.indexOf('height');
-      if(indHeight > -1) {
-        return eval(val.substring(0, indHeight) + $el.height() + val.substring(indHeight + 6, val.length));
-      }
-
-      val = eval(val);
+        var height = $el.height();
+        var width = $el.width();
+        //Eval is evil, but don't be stupid:
+        if(val.indexOf('height') > -1 || val.indexOf('width') > -1) {
+          val = eval(val);
+        }
     }
+
+    // If no relative, return raw
     if(!relTo) return val;
+
+    // Split the relative
     var vals = relTo.split('.');
+
+    // If the relative element doesn't exist
     if(!tree[vals[0]]) return val;
+
+    // Get the relative value
     var t = tree[vals[0]];
     var type = 'start';
     if(vals.length > 1){
       type = vals[1];
     }
+
+    // Get change the percentage to a number
+    if(val.toString().slice(-1) === '%') {
+      var end = t.end;
+      if(end === 'height') end = t.height;
+      val = (parseInt(val)/100) * (t.end - t.start);
+    }
+
     return t[type] + val;
   };
 
@@ -270,7 +294,6 @@
   function getMaxHeight(animations){
     var h = 0;
     for(var i = 0; i < animations.length; i++){
-
       h = Math.max(h, animations[i].end);
     }
     return h;
