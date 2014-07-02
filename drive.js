@@ -42,7 +42,7 @@
     function scroll(e) {
       preventDefault(e);
 
-      scrollPos += -1 * (e.wheelDeltaY/12);
+      scrollPos += -1 * (e.wheelDeltaY/15);
 
       if(scrollPos < 0) scrollPos = 0;
       if(scrollPos > maxHeight) scrollPos = maxHeight;
@@ -144,7 +144,7 @@
       //Tweening
       //Calculate difference between scrollPos and tweenPos;
       //Arb max scroll px at one time
-      var scrollDiff = (scrollPos - tweenPos) * 0.5;
+      var scrollDiff = (scrollPos - tweenPos) * 0.3;
 
       tweenPos += scrollDiff;
       // Make sure all the animations get to the end of their timeline
@@ -202,10 +202,6 @@
         var animType = animObj.animation;
         var prop = animObj.property;
 
-        if(!prop) {
-          prop = an.animation.property;
-        }
-
         if(prop){
           applyStyle(an.$, animType, prop, position, unit);
         }
@@ -237,7 +233,7 @@
         animType = 'transform';
         break;
       default:
-
+        prop = lcAnimation;
         break;
     }
 
@@ -261,7 +257,6 @@
     }
 
     for(var i = 0; i < toRemove.length; i++) {
-      console.log('hidden');
       toRemove[i].$.css('visibility', 'hidden');
     }
   }
@@ -333,6 +328,8 @@
 
     // Array of active animations
     var active = [];
+
+    animations
 
     // Find the active animations
     for(var i = 0; i < animations.length; i++){
