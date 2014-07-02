@@ -94,6 +94,8 @@
         el.name = 'drive-dy-' + ++count;
       }
 
+      $el.css('visbility', 'hidden');
+
       var t = {
         $: $el,
         height: $el.height(),
@@ -145,12 +147,32 @@
       var scrollDiff = (scrollPos - tweenPos) * 0.5;
 
       tweenPos += scrollDiff;
+      // Make sure all the animations get to the end of their timeline
+      for(var i = 0; i < prevActive.length; i++) {
+        an = prevActive[i];
+        if(an.end < tweenPos) {
+          var end = an.end;
+          var anim = parseAnimationType(an.animation.property.toLowerCase());
+          var unit = an.animation.end.slice(-1);
+          if(!isNaN(parseInt(unit))) unit = '';
+          applyStyle(an.$, anim.animation, anim.property, parseInt(an.animation.end), unit);
+        } else if(an.start > tweenPos) {
+          var end = an.start;
+          var anim = parseAnimationType(an.animation.property.toLowerCase());
+          var unit = an.animation.end.slice(-1);
+          if(!isNaN(parseInt(unit))) unit = '';
+          applyStyle(an.$, anim.animation, anim.property, parseInt(an.animation.start), unit);
+        }
+      }
+
 
       // TODO: Clear out the last frames
 
       var anims = getAnimationsForFrame(timeline, tweenPos);
       var percent = 0;
       var lc = '';
+
+      hideOutOfFrameAnimations(prevActive, anims);
 
       // Holds the composited transform calls
       var animCalls = {};
@@ -175,22 +197,13 @@
         // And for 0 starts, 0 - (0 * -100) = 0, but still ends up in the right place
         var position = sv - (percent * diff);
 
-        var animType = '';
-        var prop = '';
+        var animObj = parseAnimationType(lc);
 
-        switch(lc) {
-          case 'translatey':
-          case 'scroll':
-            prop = 'translateY';
-            animType = 'transform';
-            break;
-          case 'translatex':
-            prop = 'translateX';
-            animType = 'transform';
-            break;
-          default:
-            prop = an.animation.property;
-            break;
+        var animType = animObj.animation;
+        var prop = animObj.property;
+
+        if(!prop) {
+          prop = an.animation.property;
         }
 
         if(prop){
@@ -209,6 +222,49 @@
     return 'smile';
   };
 
+  function parseAnimationType(lcAnimation) {
+    var prop = '';
+    var animType = '';
+
+    switch(lcAnimation) {
+      case 'translatey':
+      case 'scroll':
+        prop = 'translateY';
+        animType = 'transform';
+        break;
+      case 'translatex':
+        prop = 'translateX';
+        animType = 'transform';
+        break;
+      default:
+
+        break;
+    }
+
+    return {property: prop, animation: animType};
+  }
+
+  function hideOutOfFrameAnimations(previous, current) {
+    var found = false;
+    var toRemove = []
+    for(var i = 0; i < previous.length; i++) {
+      found = false;
+      for(var j = 0; j < current.length; j++) {
+        if(previous[i].name === current[j].name) {
+          found = true;
+          break;
+        }
+      }
+      if(found === false) {
+        toRemove.push(previous);
+      }
+    }
+
+    for(var i = 0; i < toRemove.length; i++) {
+      console.log('hidden');
+      toRemove[i].$.css('visibility', 'hidden');
+    }
+  }
 
   function applyStyle($el, animType, prop, position, unit){
     if(animType){
@@ -227,12 +283,12 @@
             transf = 'translateY(' + parseInt(values[5]) + 'px) ';
           }
         }
-
         $el.css('transform', transf + prop + '(' + position + unit + ')');
       }
     }else{
        $el.css(prop, position + unit);
     }
+    $el.css('visibility', 'visible');
   };
 
 
@@ -266,8 +322,6 @@
 
     // Get change the percentage to a number
     if(val.toString().slice(-1) === '%') {
-      var end = t.end;
-      if(end === 'height') end = t.height;
       val = (parseInt(val)/100) * (t.end - t.start);
     }
 
