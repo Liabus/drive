@@ -168,11 +168,14 @@
 
       // TODO: Clear out the last frames
 
-      var anims = getAnimationsForFrame(timeline, tweenPos);
+      //Reset animating: 
+      animating = {};
+      
+      var anims = getAnimationsForFrame(timeline, tweenPos, animating);
       var percent = 0;
       var lc = '';
 
-      hideOutOfFrameAnimations(prevActive, anims);
+      hideOutOfFrameAnimations(tree, animating);
 
       // Holds the composited transform calls
       var animCalls = {};
@@ -240,28 +243,17 @@
     return {property: prop, animation: animType};
   }
 
-  function hideOutOfFrameAnimations(previous, current) {
-    var found = false;
-    var toRemove = []
-    for(var i = 0; i < previous.length; i++) {
-      found = false;
-      for(var j = 0; j < current.length; j++) {
-        if(previous[i].name === current[j].name) {
-          found = true;
-          break;
-        }
+  function hideOutOfFrameAnimations(tree, animating) {
+    for(var t in tree){
+      if(tree.hasOwnProperty(t) && !animating[t]){
+        tree[t].$.css('display', 'none');
       }
-      if(found === false) {
-        toRemove.push(previous);
-      }
-    }
-
-    for(var i = 0; i < toRemove.length; i++) {
-      toRemove[i].$.css('visibility', 'hidden');
     }
   }
 
   function applyStyle($el, animType, prop, position, unit){
+    //Ensure visibility is set to visible.
+    $el.css('display', 'block');
     if(animType){
       if(animType === 'transform'){
 
@@ -283,7 +275,6 @@
     }else{
        $el.css(prop, position + unit);
     }
-    $el.css('visibility', 'visible');
   };
 
 
@@ -324,18 +315,17 @@
   };
 
   //Animations should be the timeline. Pos is the current scroll position:
-  function getAnimationsForFrame(animations, pos){
+  function getAnimationsForFrame(animations, pos, animating){
 
     // Array of active animations
     var active = [];
-
-    animations
 
     // Find the active animations
     for(var i = 0; i < animations.length; i++){
       // If the position is within the range of animation
       if(animations[i].start <= pos && animations[i].end >= pos) {
         active.push(animations[i]);
+        animating[animations[i].element.name] = true;
       }
     }
 
