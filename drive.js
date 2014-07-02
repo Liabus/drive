@@ -216,8 +216,6 @@
 
     requestAnimationFrame(animationLoop);
 
-    console.log(timeline);
-
     return 'smile';
   };
 
@@ -245,7 +243,7 @@
 
   function hideOutOfFrameAnimations(tree, animating) {
     for(var t in tree){
-      if(tree.hasOwnProperty(t) && !animating[t]){
+      if(tree.hasOwnProperty(t) && !animating[t] && !tree[t].persist){
         tree[t].$.css('display', 'none');
       }
     }
