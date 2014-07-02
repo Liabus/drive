@@ -100,7 +100,8 @@
         $: $el,
         height: $el.height(),
         start: timeGen(tree, relative, tl.start, $el),
-        end: timeGen(tree, relative, tl.end, $el)
+        end: timeGen(tree, relative, tl.end, $el),
+        persist: el.persist
       };
 
       tree[el.name] = t;
@@ -168,9 +169,9 @@
 
       // TODO: Clear out the last frames
 
-      //Reset animating: 
+      //Reset animating:
       animating = {};
-      
+
       var anims = getAnimationsForFrame(timeline, tweenPos, animating);
       var percent = 0;
       var lc = '';
