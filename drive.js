@@ -30,9 +30,9 @@
       for (var i = keys.length; i--;) {
         if (e.keyCode === keys[i].key) {
           if(keys[i].dir === 'up'){
-            scroll({wheelDeltaY: 200});
+            scroll({deltaY: 200, preventDefault: drive.nop});
           }else{
-            scroll({wheelDeltaY: -200});
+            scroll({deltaY: -200, preventDefault: drive.nop});
           }
           return;
         }
@@ -40,28 +40,21 @@
     };
 
     function scroll(e) {
-      preventDefault(e);
+      e.preventDefault();
 
-      scrollPos += -1 * (e.wheelDeltaY/15);
+      scrollPos += -1 * (e.deltaY/15);
 
       if(scrollPos < 0) scrollPos = 0;
       if(scrollPos > maxHeight) scrollPos = maxHeight;
     };
-
-    if (window.addEventListener) {
-        window.addEventListener('DOMMouseScroll', scroll, false);
-    }
-    window.onmousewheel = document.onmousewheel = scroll;
-    document.onkeydown = keydown;
+    
+    $(document.body).on('keydown', keydown);
+    $(document.body).on('mousewheel', scroll);
 
 
     //Grab a reference to the element.
     var $el = $(selector);
     $el.addClass('drive-parent');
-
-    $el.children().each(function(i, child){
-      $(child).addClass('drive-block')
-    });
 
     //TODO: keep track of animating elements, change display values (or visibility) based on if we are animating or not.
 
@@ -94,7 +87,7 @@
         el.name = 'drive-dy-' + ++count;
       }
 
-      $el.css('visbility', 'hidden');
+      $el.css('display', 'none');
 
       var t = {
         $: $el,
@@ -176,7 +169,7 @@
       var percent = 0;
       var lc = '';
 
-      hideOutOfFrameAnimations(tree, animating);
+      hideOutOfFrameAnimations(tree, animating, tweenPos);
 
       // Holds the composited transform calls
       var animCalls = {};
@@ -219,6 +212,8 @@
 
     return 'smile';
   };
+  
+  drive.nop = function(){};
 
   function parseAnimationType(lcAnimation) {
     var prop = '';
@@ -242,10 +237,14 @@
     return {property: prop, animation: animType};
   }
 
-  function hideOutOfFrameAnimations(tree, animating) {
+  function hideOutOfFrameAnimations(tree, animating, scrollPos) {
     for(var t in tree){
-      if(tree.hasOwnProperty(t) && !animating[t] && !tree[t].persist){
-        tree[t].$.css('display', 'none');
+      var tr = tree[t];
+      if(tree.hasOwnProperty(t) && !animating[t] && !tr.persist){
+        //Check to see if we're in the tree's timeline:
+        if(tr.start < scrollPos || tr.end > scrollPos){
+          tree[t].$.css('display', 'none');
+        };
       }
     }
   }
@@ -337,14 +336,6 @@
       h = Math.max(h, animations[i].end);
     }
     return h;
-  };
-
-  function preventDefault(e) {
-    e = e || window.event;
-    if (e.preventDefault){
-      e.preventDefault();
-    }
-    e.returnValue = false;
   };
 
 
