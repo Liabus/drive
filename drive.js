@@ -139,9 +139,9 @@
       //Calculate difference between scrollPos and tweenPos;
       //Arb max scroll px at one time
       var scrollDiff = (scrollPos - tweenPos) * 0.3;
-
       tweenPos += scrollDiff;
-      // Make sure all the animations get to the end of their timeline
+      
+      // FIXME: Make sure all the animations get to the end of their timeline
       for(var i = 0; i < prevActive.length; i++) {
         an = prevActive[i];
         if(an.end < tweenPos) {
@@ -159,9 +159,6 @@
         }
       }
 
-
-      // TODO: Clear out the last frames
-
       //Reset animating:
       animating = {};
 
@@ -170,9 +167,6 @@
       var lc = '';
 
       hideOutOfFrameAnimations(tree, animating, tweenPos);
-
-      // Holds the composited transform calls
-      var animCalls = {};
 
       for(var i = 0; i < anims.length; i++){
         var an = anims[i];
@@ -229,6 +223,9 @@
         prop = 'translateX';
         animType = 'transform';
         break;
+      case 'scale':
+        prop = 'scale'
+        animType = 'transform';
       default:
         prop = lcAnimation;
         break;
@@ -268,6 +265,7 @@
             transf = 'translateY(' + parseInt(values[5]) + 'px) ';
           }
         }
+        
         $el.css('transform', transf + prop + '(' + position + unit + ')');
       }
     }else{

@@ -1,11 +1,12 @@
 body, html {
  overflow: hidden; 
 }
+
 .drive-parent {
   overflow: hidden;
 }
 
-.drive-block {
-  position: fixed;
-  top: 0;
+/* Enable hardware acceleration on all children: */
+.drive-parent * {
+  -webkit-transform: translate3d(0, 0, 0);
 }
