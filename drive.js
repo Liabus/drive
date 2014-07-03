@@ -42,7 +42,7 @@
     function scroll(e) {
       e.preventDefault();
 
-      scrollPos += -1 * (e.deltaY/15);
+      scrollPos += -1 * ( e.deltaY / 6 );
 
       if(scrollPos < 0) scrollPos = 0;
       if(scrollPos > maxHeight) scrollPos = maxHeight;
@@ -139,7 +139,7 @@
       //Calculate difference between scrollPos and tweenPos;
       //Arb max scroll px at one time
       var scrollDiff = (scrollPos - tweenPos) * 0.3;
-      tweenPos += scrollDiff;
+      tweenPos = Math.round((tweenPos + scrollDiff) * 1000) / 1000;
       
       // FIXME: Make sure all the animations get to the end of their timeline
       for(var i = 0; i < prevActive.length; i++) {
@@ -278,12 +278,12 @@
 
     // So if the val includes a height or width
     if(typeof val === 'string'){
-        var height = $el.height();
-        var width = $el.width();
-        //Eval is evil, but don't be stupid:
-        if(val.indexOf('height') > -1 || val.indexOf('width') > -1) {
-          val = eval(val);
-        }
+      var height = $el.height();
+      var width = $el.width();
+      //Eval is evil, but don't be stupid:
+      if(val.indexOf('height') > -1 || val.indexOf('width') > -1) {
+        val = eval(val);
+      }
     }
 
     // If no relative, return raw
