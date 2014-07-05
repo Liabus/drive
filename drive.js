@@ -123,8 +123,11 @@
       if(!el.name){
         el.name = 'drive-dy-' + ++count;
       }
-
-      $el.css('display', 'none');
+      
+      //Don't hide persisting elements:
+      if(!el.persist){
+        $el.css('display', 'none');
+      }
 
       var t = {
         $: $el,
