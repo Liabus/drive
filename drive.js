@@ -295,6 +295,8 @@
   }
 
   function applyStyle($el, animType, prop, position, unit){
+    //Limit precision:
+    position = Math.round(position * 1000) / 1000;
     //Ensure visibility is set to visible.
     $el.css('display', 'block');
     if(animType){
