@@ -73,6 +73,9 @@
     //Allow users to tap into the render loop:
     var renderFn = options.render || drive.nop;
     
+    //To prevent layout thrashing:
+    var transitionCache = {};
+    
     
     var $thumb = $();
     var dragging = false;
@@ -193,13 +196,13 @@
           var anim = parseAnimationType(an.animation.property.toLowerCase());
           var unit = an.animation.end.slice(-1);
           if(!isNaN(parseInt(unit))) unit = '';
-          applyStyle(an.$, anim.animation, anim.property, parseInt(an.animation.end), unit);
+          applyStyle(an.$, anim.animation, anim.property, parseInt(an.animation.end), unit, an.element.name, transitionCache);
         } else if(an.start > tweenPos) {
           var end = an.start;
           var anim = parseAnimationType(an.animation.property.toLowerCase());
           var unit = an.animation.end.slice(-1);
           if(!isNaN(parseInt(unit))) unit = '';
-          applyStyle(an.$, anim.animation, anim.property, parseInt(an.animation.start), unit);
+          applyStyle(an.$, anim.animation, anim.property, parseInt(an.animation.start), unit, an.element.name, transitionCache);
         }
       }
 
@@ -238,7 +241,7 @@
         var prop = animObj.property;
 
         if(prop){
-          applyStyle(an.$, animType, prop, position, unit);
+          applyStyle(an.$, animType, prop, position, unit, an.element.name, transitionCache);
         }
       }
 
@@ -294,35 +297,42 @@
     }
   }
 
-  function applyStyle($el, animType, prop, position, unit){
+  function applyStyle($el, animType, prop, position, unit, name, transitionCache){
     //Limit precision:
     position = Math.round(position * 1000) / 1000;
     //Ensure visibility is set to visible.
-    //$el.css('display', 'block');
     var el = $el.get(0);
     el.style.display = 'block';
+    
     if(animType){
       if(animType === 'transform'){
-
-        var transf = '';
-
-        if($el.css('transform')){
-          //Get the matrix
-          var matrix = $el.css('transform');
-          var values = matrix.split(',');
-
-          if(parseInt(values[4]) > 0 && prop !== 'translateX') {
-            transf = 'translateX(' + parseInt(values[4]) + 'px) ';
-          }else if(parseInt(values[5]) > 0 && prop !== 'translateY') {
-            transf = 'translateY(' + parseInt(values[5]) + 'px) ';
+        
+        if(transitionCache[name]){
+          transitionCache[name][prop] = {
+            prop: prop,
+            position: position,
+            unit: unit
+          };
+        }else{
+          transitionCache[name] = {};
+          transitionCache[name][prop] = {
+            prop: prop,
+            position: position,
+            unit: unit
+          };
+        }
+        
+        var constructed = '';
+        for(var x in transitionCache[name]){
+          if(transitionCache[name].hasOwnProperty(x)){
+            var y = transitionCache[name][x];
+            constructed += y.prop + '(' + y.position + y.unit  + ')';
           }
         }
-        el.style['transform'] = transf + prop + '(' + position + unit + ')';
-        //$el.css('transform', transf + prop + '(' + position + unit + ')');
+        el.style['transform'] = constructed;
       }
     }else{
       el.style[prop] = position + unit;
-      //$el.css(prop, position + unit);
     }
   };
 
