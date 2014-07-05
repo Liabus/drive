@@ -330,6 +330,10 @@
           }
         }
         el.style['transform'] = constructed;
+        el.style['-webkit-transform'] = constructed;
+        el.style['-ms-transform'] = constructed;
+        el.style['-moz-transform'] = constructed;
+        el.style['-o-transform'] = constructed;
       }
     }else{
       el.style[prop] = position + unit;
