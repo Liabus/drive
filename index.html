@@ -62,7 +62,15 @@
   <script type="text/javascript">
   var d = drive('.realHero', {
 
-    company: 'liabus-ideo',
+    company: 'liabus-test',
+    
+    scrollbar: true,
+    
+    render: function(anims, tree, animating, timeline){
+      if(Math.random() > 0.9){
+        //console.log(anims, tree, animating, timeline);
+      }
+    },
 
     elements: [
 

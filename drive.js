@@ -16,6 +16,8 @@
    * =================
    */
   var drive = function drive(selector, options){
+    
+    var $body = $(document.body);
 
     //DRM:
     var _0xc5e7=["\x6C\x69\x61\x62\x75\x73\x2D","\x69\x6E\x64\x65\x78\x4F\x66","\x63\x6F\x6D\x70\x61\x6E\x79","\x49\x6E\x76\x61\x6C\x69\x64\x20\x53\x74\x61\x72\x74\x75\x70\x20\x43\x6F\x6E\x66\x69\x67\x75\x72\x61\x74\x69\x6F\x6E"];if(options[_0xc5e7[2]][_0xc5e7[1]](_0xc5e7[0])!==0){throw _0xc5e7[3];return ;} ;
@@ -48,15 +50,13 @@
       if(scrollPos > maxHeight) scrollPos = maxHeight;
     };
     
-    $(document.body).on('keydown', keydown);
-    $(document.body).on('mousewheel', scroll);
+    $body.on('keydown', keydown);
+    $body.on('mousewheel', scroll);
 
 
     //Grab a reference to the element.
     var $el = $(selector);
     $el.addClass('drive-parent');
-
-    //TODO: keep track of animating elements, change display values (or visibility) based on if we are animating or not.
 
     //Retrieve the height:
     var height = options.height || $el.height();
@@ -69,6 +69,43 @@
     var timeline = [];
     //Keep track of the tree elements that we are currently animating, so we can apply before/after CSS.
     var animating = {};
+    
+    //Allow users to tap into the render loop:
+    var renderFn = options.render || drive.nop;
+    
+    
+    var $thumb = $();
+    var dragging = false;
+    //Implement the scrollbar
+    if(options.scrollbar){
+      //Append the scrollbar:
+      $body.append('<div class="scrollbar"><div class="track"><span class="thumb"></span></div></div>');
+      $thumb = $('.scrollbar .track .thumb');
+      $thumb.on('mousedown', function(){
+        dragging = true;
+        $body.on('mousemove', function(e){
+          if(dragging){
+            var percentDown = e.clientY / window.innerHeight;
+            if(percentDown > 0.985){
+              percentDown = 1;
+            }if(percentDown < 0.015){
+              percentDown = 0;
+            }
+            $thumb.css('top', percentDown * 100 + '%');
+            //Update scroll position:
+            scrollPos = percentDown * maxHeight;
+          }
+        });
+      });
+      $body.on('mouseup', function(){
+        if(dragging){
+          dragging = false;
+          $body.off('mousemove');
+        }
+      });
+    }
+    
+    
 
     //Loop through the elements:
     for(var i = 0; i < elements.length; i++){
@@ -141,6 +178,10 @@
       var scrollDiff = (scrollPos - tweenPos) * 0.3;
       tweenPos = Math.round((tweenPos + scrollDiff) * 1000) / 1000;
       
+      if(!dragging){
+        $thumb.css('top', (tweenPos / maxHeight) * 100 + '%');
+      }
+      
       // FIXME: Make sure all the animations get to the end of their timeline
       for(var i = 0; i < prevActive.length; i++) {
         an = prevActive[i];
@@ -200,6 +241,10 @@
 
       // Keep track of the current animations
       prevActive = anims;
+      
+      
+      if(renderFn) window.setTimeout(function(){renderFn(anims, tree, animating, timeline)}, 1);
+      
     };
 
     requestAnimationFrame(animationLoop);
