@@ -298,13 +298,15 @@
     //Limit precision:
     position = Math.round(position * 1000) / 1000;
     //Ensure visibility is set to visible.
-    $el.css('display', 'block');
+    //$el.css('display', 'block');
+    var el = $el.get(0);
+    el.style.display = 'block';
     if(animType){
       if(animType === 'transform'){
 
         var transf = '';
 
-        if($el.css('transform')) {
+        if($el.css('transform')){
           //Get the matrix
           var matrix = $el.css('transform');
           var values = matrix.split(',');
@@ -315,11 +317,12 @@
             transf = 'translateY(' + parseInt(values[5]) + 'px) ';
           }
         }
-        
-        $el.css('transform', transf + prop + '(' + position + unit + ')');
+        el.style['transform'] = transf + prop + '(' + position + unit + ')';
+        //$el.css('transform', transf + prop + '(' + position + unit + ')');
       }
     }else{
-       $el.css(prop, position + unit);
+      el.style[prop] = position + unit;
+      //$el.css(prop, position + unit);
     }
   };
 
