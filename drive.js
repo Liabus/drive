@@ -330,6 +330,10 @@
             constructed += y.prop + '(' + y.position + y.unit  + ')';
           }
         }
+        
+        //Enable hardware acceleration:
+        constructed += ' translateZ(0)';
+        
         el.style['transform'] = constructed;
         el.style['-webkit-transform'] = constructed;
         el.style['-ms-transform'] = constructed;
