@@ -299,7 +299,8 @@
 
   function applyStyle($el, animType, prop, position, unit, name, transitionCache){
     //Limit precision:
-    position = Math.round(position * 1000) / 1000;
+    position = Math.round(position * 100000) / 100000;
+    
     //Ensure visibility is set to visible.
     var el = $el.get(0);
     el.style.display = 'block';
