@@ -181,7 +181,7 @@
       //Tweening
       //Calculate difference between scrollPos and tweenPos;
       //Arb max scroll px at one time
-      var scrollDiff = (scrollPos - tweenPos) * 0.4;
+      var scrollDiff = (scrollPos - tweenPos) * 0.34;
       tweenPos = Math.round((tweenPos + scrollDiff) * 10000) / 10000;
       
       if(!dragging){
