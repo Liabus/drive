@@ -44,7 +44,7 @@
     function scroll(e) {
       e.preventDefault();
 
-      scrollPos += -1 * ( e.deltaY / 2 );
+      scrollPos += -1 * ( e.deltaY / 1.5 );
 
       if(scrollPos < 0) scrollPos = 0;
       if(scrollPos > maxHeight) scrollPos = maxHeight;
