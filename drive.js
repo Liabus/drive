@@ -44,7 +44,7 @@
     function scroll(e) {
       e.preventDefault();
 
-      scrollPos += -1 * ( e.deltaY / 6 );
+      scrollPos += -1 * ( e.deltaY / 2 );
 
       if(scrollPos < 0) scrollPos = 0;
       if(scrollPos > maxHeight) scrollPos = maxHeight;
@@ -181,8 +181,8 @@
       //Tweening
       //Calculate difference between scrollPos and tweenPos;
       //Arb max scroll px at one time
-      var scrollDiff = (scrollPos - tweenPos) * 0.3;
-      tweenPos = Math.round((tweenPos + scrollDiff) * 1000) / 1000;
+      var scrollDiff = (scrollPos - tweenPos) * 0.4;
+      tweenPos = Math.round((tweenPos + scrollDiff) * 10000) / 10000;
       
       if(!dragging){
         $thumb.css('top', (tweenPos / maxHeight) * 100 + '%');
