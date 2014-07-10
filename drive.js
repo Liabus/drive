@@ -305,8 +305,7 @@
     position = Math.round(position * 100000) / 100000;
     
     //Ensure visibility is set to visible.
-    var el = $el.get(0);
-    el.css('display', 'block');
+    $el.css('display', 'block');
     
     if(animType){
       if(animType === 'transform'){
@@ -337,14 +336,14 @@
         //Enable hardware acceleration:
         constructed += ' translateZ(0)';
         
-        el.css('transform', constructed);
-        el.css('-webkit-transform', constructed);
-        el.css('-ms-transform', constructed);
-        el.css('-moz-transform', constructed);
-        el.css('-o-transform', constructed);
+        $el.css('transform', constructed);
+        $el.css('-webkit-transform', constructed);
+        $el.css('-ms-transform', constructed);
+        $el.css('-moz-transform', constructed);
+        $el.css('-o-transform', constructed);
       }
     }else{
-      el.css(prop, position + unit);
+      $el.css(prop, position + unit);
     }
   };
 
