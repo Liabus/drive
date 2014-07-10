@@ -155,11 +155,14 @@
           tl.end = timeGen(tree, animations[j].timeline.relative, animations[j].timeline.end, $el);
         }
 
-        //.log(tl);
-
-        //Just push, we can sort later:
+        //Allow for you to define custom selectors in animations:
+        var $ael = $el;
+        if(animations[j].selector){
+          $ael = $el.find(animations[j].selector);
+        }
+        
         timeline.push({
-          $: $el,
+          $: $ael,
           element: el,
           animation: animations[j],
           start: tl.start,
