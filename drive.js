@@ -303,7 +303,7 @@
     
     //Ensure visibility is set to visible.
     var el = $el.get(0);
-    el.style.display = 'block';
+    el.css('display', 'block');
     
     if(animType){
       if(animType === 'transform'){
@@ -334,14 +334,14 @@
         //Enable hardware acceleration:
         constructed += ' translateZ(0)';
         
-        el.style['transform'] = constructed;
-        el.style['-webkit-transform'] = constructed;
-        el.style['-ms-transform'] = constructed;
-        el.style['-moz-transform'] = constructed;
-        el.style['-o-transform'] = constructed;
+        el.css('transform', constructed);
+        el.css('-webkit-transform', constructed);
+        el.css('-ms-transform', constructed);
+        el.css('-moz-transform', constructed);
+        el.css('-o-transform', constructed);
       }
     }else{
-      el.style[prop] = position + unit;
+      el.css(prop, position + unit);
     }
   };
 
