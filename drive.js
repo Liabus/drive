@@ -293,7 +293,7 @@
       var tr = tree[t];
       if(tree.hasOwnProperty(t) && !animating[t] && !tr.persist){
         //Check to see if we're in the tree's timeline:
-        if(tr.start < scrollPos || tr.end > scrollPos){
+        if(tr.start > scrollPos || tr.end < scrollPos){
           tree[t].$.css('display', 'none');
         };
       }
