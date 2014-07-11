@@ -48,6 +48,8 @@
 
       if(scrollPos < 0) scrollPos = 0;
       if(scrollPos > maxHeight) scrollPos = maxHeight;
+      
+      if(scrollFn) window.setTimeout(function(){scrollFn(scrollPos, animating, tree)}, 1);
     };
     
     $body.on('keydown', keydown);
@@ -73,6 +75,9 @@
     //Allow users to tap into the render loop:
     var renderFn = options.render || drive.nop;
     
+    //Give users a throttled scroll function:
+    var scrollFn = options.scroll || drive.nop;
+    
     //To prevent layout thrashing:
     var transitionCache = {};
     
@@ -97,6 +102,8 @@
             $thumb.css('top', percentDown * 100 + '%');
             //Update scroll position:
             scrollPos = percentDown * maxHeight;
+            
+            if(scrollFn) window.setTimeout(function(){scrollFn(scrollPos, animating, tree)}, 1);
           }
         });
       });
