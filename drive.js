@@ -265,7 +265,12 @@
 
     requestAnimationFrame(animationLoop);
 
-    return 'smile';
+    return {
+      scrollTo: function(el){
+        //Update scrollPos to the start of the element:
+        scrollPos = tree[el].start;
+      }
+    };
   };
   
   drive.nop = function(){};
