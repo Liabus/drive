@@ -16,7 +16,7 @@
    * =================
    */
   var drive = function drive(selector, options){
-    
+
     var $body = $(document.body);
 
     //DRM:
@@ -48,10 +48,10 @@
 
       if(scrollPos < 0) scrollPos = 0;
       if(scrollPos > maxHeight) scrollPos = maxHeight;
-      
-      if(scrollFn) window.setTimeout(function(){scrollFn(scrollPos, animating, tree)}, 1);
+
+      scrollFn();
     };
-    
+
     $body.on('keydown', keydown);
     $body.on('mousewheel', scroll);
 
@@ -71,17 +71,20 @@
     var timeline = [];
     //Keep track of the tree elements that we are currently animating, so we can apply before/after CSS.
     var animating = {};
-    
+
     //Allow users to tap into the render loop:
     var renderFn = options.render || drive.nop;
-    
+
+    var _scrollFn = options.scroll || drive.nop;
     //Give users a throttled scroll function:
-    var scrollFn = options.scroll || drive.nop;
-    
+    var scrollFn = function(){
+      _scrollFn(scrollPos, animating, tree);
+    }
+
     //To prevent layout thrashing:
     var transitionCache = {};
-    
-    
+
+
     var $thumb = $();
     var dragging = false;
     //Implement the scrollbar
@@ -102,8 +105,8 @@
             $thumb.css('top', percentDown * 100 + '%');
             //Update scroll position:
             scrollPos = percentDown * maxHeight;
-            
-            if(scrollFn) window.setTimeout(function(){scrollFn(scrollPos, animating, tree)}, 1);
+
+            scrollFn();
           }
         });
       });
@@ -114,8 +117,8 @@
         }
       });
     }
-    
-    
+
+
 
     //Loop through the elements:
     for(var i = 0; i < elements.length; i++){
@@ -133,7 +136,7 @@
       if(!el.name){
         el.name = 'drive-dy-' + ++count;
       }
-      
+
       //Don't hide persisting elements:
       if(!el.persist){
         $el.css('display', 'none');
@@ -167,7 +170,7 @@
         if(animations[j].selector){
           $ael = $el.find(animations[j].selector);
         }
-        
+
         timeline.push({
           $: $ael,
           element: el,
@@ -192,12 +195,14 @@
       //Calculate difference between scrollPos and tweenPos;
       //Arb max scroll px at one time
       var scrollDiff = (scrollPos - tweenPos) * 0.34;
+      if(scrollDiff > 90) scrollDiff = 90;
+      if(scrollDiff < -90) scrollDiff = -90;
       tweenPos = Math.round((tweenPos + scrollDiff) * 10000) / 10000;
-      
+
       if(!dragging){
         $thumb.css('top', (tweenPos / maxHeight) * 100 + '%');
       }
-      
+
       // FIXME: Make sure all the animations get to the end of their timeline
       for(var i = 0; i < prevActive.length; i++) {
         an = prevActive[i];
@@ -257,10 +262,10 @@
 
       // Keep track of the current animations
       prevActive = anims;
-      
-      
+
+
       if(renderFn) window.setTimeout(function(){renderFn(anims, tree, animating, timeline)}, 1);
-      
+
     };
 
     requestAnimationFrame(animationLoop);
@@ -269,10 +274,17 @@
       scrollTo: function(el){
         //Update scrollPos to the start of the element:
         scrollPos = tree[el].start;
+        scrollFn();
+      },
+      scrollToEnd: function(el, add){
+        add = add || 0;
+        //Update scrollPos to the start of the element:
+        scrollPos = tree[el].end + add;
+        scrollFn();
       }
     };
   };
-  
+
   drive.nop = function(){};
 
   function parseAnimationType(lcAnimation) {
@@ -315,13 +327,13 @@
   function applyStyle($el, animType, prop, position, unit, name, transitionCache){
     //Limit precision:
     position = Math.round(position * 100000) / 100000;
-    
+
     //Ensure visibility is set to visible.
     $el.css('display', 'block');
-    
+
     if(animType){
       if(animType === 'transform'){
-        
+
         if(transitionCache[name]){
           transitionCache[name][prop] = {
             prop: prop,
@@ -336,7 +348,7 @@
             unit: unit
           };
         }
-        
+
         var constructed = '';
         for(var x in transitionCache[name]){
           if(transitionCache[name].hasOwnProperty(x)){
@@ -344,10 +356,10 @@
             constructed += y.prop + '(' + y.position + y.unit  + ')';
           }
         }
-        
+
         //Enable hardware acceleration:
         constructed += ' translateZ(0)';
-        
+
         $el.css('transform', constructed);
         $el.css('-webkit-transform', constructed);
         $el.css('-ms-transform', constructed);
