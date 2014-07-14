@@ -44,6 +44,8 @@
     function scroll(e) {
       e.preventDefault();
 
+      if(paused) return;
+
       scrollPos += -1 * ( e.deltaY / 1.5 );
 
       if(scrollPos < 0) scrollPos = 0;
@@ -87,6 +89,9 @@
 
     var $thumb = $();
     var dragging = false;
+
+    var paused = false;
+
     //Implement the scrollbar
     if(options.scrollbar){
       //Append the scrollbar:
@@ -189,7 +194,10 @@
     var prevActive = [];
 
     function animationLoop(){
+
       requestAnimationFrame(animationLoop);
+
+      if(paused) return;
 
       //Tweening
       //Calculate difference between scrollPos and tweenPos;
@@ -271,6 +279,13 @@
     requestAnimationFrame(animationLoop);
 
     return {
+      pause: function(){
+        paused = true;
+      },
+      resume: function(){
+        paused = false;
+        console.log('resuming');
+      },
       scrollTo: function(el){
         //Update scrollPos to the start of the element:
         scrollPos = tree[el].start;
