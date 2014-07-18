@@ -44,7 +44,7 @@
     function scroll(e) {
       e.preventDefault();
 
-      if(paused) return;
+      if(paused || destroyed) return;
 
       scrollPos += -1 * ( e.deltaY / 1.5 );
 
@@ -91,13 +91,15 @@
     var dragging = false;
 
     var paused = false;
-
+    var destroyed = false;
+    
     //Implement the scrollbar
     if(options.scrollbar){
       //Append the scrollbar:
       $body.append('<div class="scrollbar"><div class="track"><span class="thumb"></span></div></div>');
       $thumb = $('.scrollbar .track .thumb');
       $thumb.on('mousedown', function(){
+        if(paused) return;
         dragging = true;
         $body.on('mousemove', function(e){
           if(dragging){
@@ -195,6 +197,9 @@
 
     function animationLoop(){
 
+      //If we've destroyed the instance, don't continue animating it:
+      if(destroyed) return;
+      
       requestAnimationFrame(animationLoop);
 
       if(paused) return;
@@ -279,6 +284,17 @@
     requestAnimationFrame(animationLoop);
 
     return {
+      destroy: function(){
+        paused = true;
+        destroyed = true;
+        //Remove event listeners:
+        $body.off('keydown');
+        $body.off('mousewheel');
+        $body.off('mousedown');
+        $body.off('mouseup');
+        //Remove scrollbar:
+        $body.remove('.scrollbar');
+      },
       pause: function(){
         paused = true;
       },
@@ -286,9 +302,10 @@
         paused = false;
         console.log('resuming');
       },
-      scrollTo: function(el){
+      scrollTo: function(el, add){
+        add = add || 0;
         //Update scrollPos to the start of the element:
-        scrollPos = tree[el].start;
+        scrollPos = tree[el].start + add;
         scrollFn();
       },
       scrollToEnd: function(el, add){

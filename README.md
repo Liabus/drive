@@ -74,3 +74,4 @@ We use RequestAnimationFrame to move elements along space based scroll position 
 - Add multiple out-of-animating display modes. Figure out how these work with the parent elements hiding when children still animating. Maybe offer per-element mode options.
 - Better persist options (replaced with mode?).
 - Figure out the difference between self and parent relative keywords. I think self makes sense in the context of per-animation timelines. Parent makes sense for child elements.
+- Before/After styles. Enable a "prepare" mode which will put elements in the style they would be at in the beginning of their timeline when drive starts.
