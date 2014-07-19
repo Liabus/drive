@@ -16,61 +16,71 @@
 }(this, function(){
   
   /*
-   * CONSTANTS
+   * VARIABLES
    */
   
-  
-  
-  /*
-   * CONSTRUCTOR
-   */
-  
-  //Public constructor for drive:
-  var Drive = function DriveConstructor () {
-    this.started = false;
-    this.running = false;
+  //Set default options:
+  const DRIVE_DEFAULTS = {
+    scrollbar: true,
+    friction: 0.34,
+    dampening: 1.4,
+    ordered: true,
+    mode: 'display'
   };
   
   /*
-   * INSTANCE METHODS
+   * DRIVE CLASS
    */
-  
-  //Method to start a drive instance:
-  Drive.prototype.start = function () {
-    //Only run if we're not started:
-    if (this.started === true) return;
+
+  class Drive {
+    //Public constructor for drive:
+    constructor(options = DRIVE_DEFAULTS) {
+      this.started = false;
+      this.running = false;
+    }
     
-    //Set started and running to true.
-    this.started = true;
-    this.running = true;
-  };
   
-  //Completely stop a Drive instance:
-  Drive.prototype.stop = function () {
-    //Only run if we're started:
-    if (this.started === true) return;
-    
-    this.started = false;
-    this.running = false;
-  };
+    /*
+     * INSTANCE METHODS
+     */
   
-  //Pause a drive instance (to later be started).
-  Drive.prototype.pause = function () {
-    //Only run if we're not paused:
-    if (this.running === true) return;
+    //Method to start a drive instance:
+    start() {
+      //Only run if we're not started:
+      if (this.started === true) return;
     
-    //Set to not running (so we can resume).
-    this.running = false;
-  };
-  
-  //Resume a Drive instance (one that was paused).
-  Drive.prototype.resume = function () {
-    //Only run if we're paused:
-    if (this.running === false) return;
+      //Set started and running to true.
+      this.started = true;
+      this.running = true;
+    }
     
-    //Set back to running (so we can pause).
-    this.running = true;
-  };
+    //Completely stop a Drive instance:
+    stop() {
+      //Only run if we're started:
+      if (this.started === true) return;
+    
+      this.started = false;
+      this.running = false;
+    }
+    
+    //Pause a drive instance (to later be started).
+    pause() {
+      //Only run if we're not paused:
+      if (this.running === true) return;
+    
+      //Set to not running (so we can resume).
+      this.running = false;
+    }
+    
+    //Resume a Drive instance (one that was paused).
+    resume() {
+      //Only run if we're paused:
+      if (this.running === false) return;
+    
+      //Set back to running (so we can pause).
+      this.running = true;
+    }
+  }
   
   
   /*
@@ -80,9 +90,7 @@
   Drive.animation = function DriveAnimationDefinition () {
     
   };
-
-  // Just return a value to define the module export.
-  // This example returns an object, but the module
-  // can return a function as the exported value.
+  
+  //Export Drive class
   return Drive;
 }));

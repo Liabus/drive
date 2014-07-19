@@ -1,0 +1,24 @@
+{
+  "name": "Drive",
+  "version": "0.2.0",
+  "homepage": "https://github.com/Liabus/drive",
+  "authors": [
+    "Jordan Gensler <jordangens@gmail.com>"
+  ],
+  "description": "I drive.",
+  "main": "drive.js",
+  "keywords": [
+    "drive",
+    "js",
+    "drivejs",
+    "scroll"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

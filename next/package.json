@@ -1,0 +1,22 @@
+{
+  "name": "Drive",
+  "version": "0.2.0",
+  "description": "I drive.",
+  "main": "drive.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/liabus/drive"
+  },
+  "keywords": [
+    "drive",
+    "js",
+    "drivejs",
+    "scroll"
+  ],
+  "author": "Liabus",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/liabus/drive/issues"
+  },
+  "homepage": "https://github.com/liabus/drive"
+}
