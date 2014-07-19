@@ -15,11 +15,25 @@
   }
 }(this, function(){
   
+  /*
+   * CONSTANTS
+   */
+  
+  
+  
+  /*
+   * CONSTRUCTOR
+   */
+  
   //Public constructor for drive:
   var Drive = function DriveConstructor () {
     this.started = false;
     this.running = false;
   };
+  
+  /*
+   * INSTANCE METHODS
+   */
   
   //Method to start a drive instance:
   Drive.prototype.start = function () {
@@ -56,6 +70,15 @@
     
     //Set back to running (so we can pause).
     this.running = true;
+  };
+  
+  
+  /*
+   * STATIC METHODS
+   */
+  
+  Drive.animation = function DriveAnimationDefinition () {
+    
   };
 
   // Just return a value to define the module export.
