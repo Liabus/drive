@@ -42,7 +42,7 @@
    * DRIVE CLASS
    */
 
-  var Drive = function DriveConstructor(options) {
+  var Drive = function DriveConstructor (options) {
     //Default options:
     options = options || DRIVE_DEFAULTS;
     
@@ -96,11 +96,11 @@
     this.running = true;
     
     //Inject the scrollbar:
-    if(this.options.scrollbar){
+    if (this.options.scrollbar) {
       //TODO: Inject HTML for scrollbar.
     }
     
-    for(var i = 0, len = this.elements.length; i < len; i++){
+    for (var i = 0, len = this.elements.length; i < len; i++) {
       
       //TODO: Compute timeline:
       this.computed.push(this.elements[i]);
@@ -154,7 +154,7 @@
     this._eventKey++;
     
     //Check to see if we've got other listeners registered:
-    if(!this.events[evt]){
+    if (!this.events[evt]) {
       this.events[evt] = [];
     }
     
@@ -167,18 +167,18 @@
   
   //Remove an event listener:
   Drive.prototype.off = function (evt, id) {
-    if(!evt){
+    if (!evt) {
       //Clear all event listeners:
       this.events = {};
-    }else if(!id){
+    } else if(!id) {
       //Clear all of one type of event listeners:
       this.events[evt] = [];
-    }else{
+    } else {
       //Clear a specific event listener:
       var listeners = this.events[evt];
-      for(var i = 0, len = listeners.length; i < len; i++){
+      for (var i = 0, len = listeners.length; i < len; i++) {
         //Check to see if the listener ID is the same as the one passed in:
-        if(listeners[i].id === id){
+        if (listeners[i].id === id) {
           //Cut out the listener:
           this.events[evt].splice(i, 1);
           break;
@@ -194,9 +194,9 @@
   //Call all of the listeners for a specific event:
   Drive.prototype._callEvent = function (evt) {
     //Check to see if we have registered listeners:
-    if(this.events[evt]){
+    if (this.events[evt]) {
       var listeners = this.events[evt];
-      for(var i = 0, len = listeners.length; i < len; i++){
+      for (var i = 0, len = listeners.length; i < len; i++) {
         //Call the event listener:
         listeners[i].fn.call(this);
       }
@@ -209,7 +209,7 @@
   
   Drive.prototype.render = function () {
     //If we're not running and we haven't started, we shouldn't animate a frame:
-    if(!this.running || !this.started) return;
+    if (!this.running || !this.started) return;
     
     //Request the next frame:
     window.requestAnimationFrame(this.render);
