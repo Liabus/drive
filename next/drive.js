@@ -44,13 +44,17 @@
 
   var Drive = function DriveConstructor(options) {
     //Default options:
-    if(!options) options = DRIVE_DEFAULTS;
+    options = options || DRIVE_DEFAULTS;
     
     this.started = false;
     this.running = false;
     
     //Copy over the options:
     this.options = options;
+    
+    //Holding event listeners:
+    this.events = {};
+    this._eventKey = 0;
     
     //Internal elements (with incomplete timelines).
     this.elements = [];
@@ -93,10 +97,11 @@
     
     //Inject the scrollbar:
     if(this.options.scrollbar){
-      
+      //TODO: Inject HTML for scrollbar.
     }
     
     for(var i = 0, len = this.elements.length; i < len; i++){
+      
       //TODO: Compute timeline:
       this.computed.push(this.elements[i]);
       
@@ -142,10 +147,60 @@
     
     //TODO: Kick animation frames back in:
   };
-    
+  
   //Set up a drive event listener:
-  Drive.prototype.on = function (evt, cb) {
+  Drive.prototype.on = function (evt, fn) {
+    //Increment our event key:
+    this._eventKey++;
     
+    //Check to see if we've got other listeners registered:
+    if(!this.events[evt]){
+      this.events[evt] = [];
+    }
+    
+    //Add the listener to the event arry:
+    this.events[evt].push({
+      id: this._eventKey,
+      fn: cb
+    });
+  };
+  
+  //Remove an event listener:
+  Drive.prototype.off = function (evt, id) {
+    if(!evt){
+      //Clear all event listeners:
+      this.events = {};
+    }else if(!id){
+      //Clear all of one type of event listeners:
+      this.events[evt] = [];
+    }else{
+      //Clear a specific event listener:
+      var listeners = this.events[evt];
+      for(var i = 0, len = listeners.length; i < len; i++){
+        //Check to see if the listener ID is the same as the one passed in:
+        if(listeners[i].id === id){
+          //Cut out the listener:
+          this.events[evt].splice(i, 1);
+          break;
+        }
+      }
+    }
+  };
+  
+  /*
+   * PRIVATE FUNCTIONS
+   */
+  
+  //Call all of the listeners for a specific event:
+  Drive.prototype._callEvent = function (evt) {
+    //Check to see if we have registered listeners:
+    if(this.events[evt]){
+      var listeners = this.events[evt];
+      for(var i = 0, len = listeners.length; i < len; i++){
+        //Call the event listener:
+        listeners[i].fn.call(this);
+      }
+    }
   };
     
   /*
