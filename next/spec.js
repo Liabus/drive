@@ -9,8 +9,8 @@ Drive.animation('scrollHeight', {
         end: 'height * 2'
       },
       property: 'translateY',
-      start: '100%',
-      end: '-100%'
+      from: '100%',
+      to: '-100%'
     }
   ]
 });

@@ -25,7 +25,9 @@
   var DRIVE_DEFAULTS = {
     //Display a scrollbar in the drive parent.
     scrollbar: true,
-    //The friction value that will be applied to tween animations
+    //Scroll tweening will animate smoothly to the scroll position instead of jumping frames.
+    scrollTweening: true,
+    //The friction value that will be applied to tween animations (only used if scrollTweening is enabled).
     friction: 0.34,
     //Max number of SPs that will be scrolled in one frame:
     maxScroll: 100,
@@ -42,15 +44,24 @@
    * DRIVE CLASS
    */
 
-  var Drive = function DriveConstructor (options) {
+  var Drive = function DriveConstructor (parent, options) {
     //Default options:
     options = options || DRIVE_DEFAULTS;
     
+    //Copy over the args:
+    this.parent = parent;
+    this.options = options;
+    
+    //Internal state:
     this.started = false;
     this.running = false;
     
-    //Copy over the options:
-    this.options = options;
+    //The furthest SP Drive can scroll to.
+    this.maxHeight = 0;
+    
+    //Current scroll position and tweened scroll position.
+    this.scrollPos = 0;
+    this.tweenPos = 0;
     
     //Holding event listeners:
     this.events = {};
@@ -71,6 +82,7 @@
    * INSTANCE METHODS
    */
   
+  //Add elements to 
   Drive.prototype.add = function (tree, parent) {
     //Only allow additions if we haven't built our internal tree yet.
     if (this.started === true) return;
