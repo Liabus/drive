@@ -1,0 +1,39 @@
+.drive-parent {
+  position: relative;
+  overflow: hidden;
+}
+
+
+/*
+ * Scroll Bar 
+ */
+
+.drive-scrollbar {
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    background: rgba(200, 200, 200, 0.3);
+}
+.drive-scrollbar .track {
+    position: absolute;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 10px;
+}
+.drive-scrollbar .thumb {
+    position: absolute;
+    top: 0;
+    display: block;
+    width: 10px;
+    height: 40px;
+    margin: -20px 0;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}

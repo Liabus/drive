@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/liabus/drive/issues"
   },
-  "homepage": "https://github.com/liabus/drive"
+  "homepage": "https://github.com/liabus/drive",
+  "devDependencies": {
+    "gulp": "^3.8.6",
+    "gulp-traceur": "^0.8.0",
+    "gulp-watch": "^0.6.8"
+  }
 }

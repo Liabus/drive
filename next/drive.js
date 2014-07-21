@@ -1,4 +1,4 @@
-//TODO: Everything
+//TODO: Most things
 
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -19,12 +19,22 @@
    * VARIABLES
    */
   
+  //TODO: Figure out if the friction value should be something like 3 and then divide by it. We don't want dampening and friction in different units.
+  
   //Set default options:
-  const DRIVE_DEFAULTS = {
+  var DRIVE_DEFAULTS = {
+    //Display a scrollbar in the drive parent.
     scrollbar: true,
+    //The friction value that will be applied to tween animations
     friction: 0.34,
-    dampening: 1.4,
+    //Max number of SPs that will be scrolled in one frame:
+    maxScroll: 100,
+    //The amount that the scroll values will be divided by to allow dampening 
+    dampening: 1,
+    //Ordered mode requires the HTML structure to match the element structure that you're providing drive (enforced by stacking selectors).
+    //Non-Ordered mode uses the plain selectors that you pass in and doesn't require things to be structred in any particular way.
     ordered: true,
+    //Controls how elements not currently animating will be hidden. You can set this to "display", "visibility", "opacity", or "none".
     mode: 'display'
   };
   
@@ -32,61 +42,135 @@
    * DRIVE CLASS
    */
 
-  class Drive {
-    //Public constructor for drive:
-    constructor(options = DRIVE_DEFAULTS) {
-      this.started = false;
-      this.running = false;
-    }
+  var Drive = function DriveConstructor(options) {
+    //Default options:
+    if(!options) options = DRIVE_DEFAULTS;
     
+    this.started = false;
+    this.running = false;
+    
+    //Copy over the options:
+    this.options = options;
+    
+    //Internal elements (with incomplete timelines).
+    this.elements = [];
+    
+    //Internal key/value association of elements and their timeline values for O(1) lookups.
+    this.timeline = {};
+    
+    //Once you call .start() this will be populated by the computed elements (with computede timelines.)
+    this.computed = [];
+  };
   
-    /*
-     * INSTANCE METHODS
-     */
   
-    //Method to start a drive instance:
-    start() {
-      //Only run if we're not started:
-      if (this.started === true) return;
+  /*
+   * INSTANCE METHODS
+   */
+  
+  Drive.prototype.add = function (tree, parent) {
+    //Only allow additions if we haven't built our internal tree yet.
+    if (this.started === true) return;
     
-      //Set started and running to true.
-      this.started = true;
-      this.running = true;
+    //TODO: Add element in position based on relative:
+    
+    if (tree.elements) {
+      //Add all child elements:
+      for (var i = 0, len = tree.elements.length; i < len; i++) {
+        //TODO: Figure out how to declare the current element as the parent element:
+        this.add(tree.elements[i], 'TODO');
+      }
+    }
+  };
+  
+  //Method to start a drive instance:
+  Drive.prototype.start = function () {
+    //Only run if we're not started:
+    if (this.started === true) return;
+  
+    //Set started and running to true.
+    this.started = true;
+    this.running = true;
+    
+    //Inject the scrollbar:
+    if(this.options.scrollbar){
+      
     }
     
-    //Completely stop a Drive instance:
-    stop() {
-      //Only run if we're started:
-      if (this.started === true) return;
-    
-      this.started = false;
-      this.running = false;
+    for(var i = 0, len = this.elements.length; i < len; i++){
+      //TODO: Compute timeline:
+      this.computed.push(this.elements[i]);
+      
     }
     
-    //Pause a drive instance (to later be started).
-    pause() {
-      //Only run if we're not paused:
-      if (this.running === true) return;
+    //Kick off the animation loop:
+    window.requestAnimationFrame(this.render);
+  };
+  
+  
+  // Completely destroy (stop) a Drive instance.
+  
+  // The reason why this is called destroy and not stop is because stop implies that you can re-call start to restore the state, 
+  // but this clears out all of the internal references to the elements, so it can't re-construct the timelines or anything.
+  
+  // The difference between this and pause is that this does a memory cleanup,
+  // as well as removes CSS classes it has added. It does it's best to return
+  // things to the original state before Drive started.
+  Drive.prototype.destroy = function () {
+    //Only run if we're started:
+    if (this.started === true) return;
+  
+    this.started = false;
+    this.running = false;
+  };
     
-      //Set to not running (so we can resume).
-      this.running = false;
-    }
+  //Pause a drive instance (to later be started).
+  Drive.prototype.pause = function () {
+    //Only run if we're not paused:
+    if (this.running === true) return;
+  
+    //Set to not running (so we can resume).
+    this.running = false;
+  };
     
-    //Resume a Drive instance (one that was paused).
-    resume() {
-      //Only run if we're paused:
-      if (this.running === false) return;
+  //Resume a Drive instance (one that was paused).
+  Drive.prototype.resume = function () {
+    //Only run if we're paused:
+    if (this.running === false) return;
+  
+    //Set back to running (so we can pause).
+    this.running = true;
     
-      //Set back to running (so we can pause).
-      this.running = true;
-    }
-  }
+    //TODO: Kick animation frames back in:
+  };
+    
+  //Set up a drive event listener:
+  Drive.prototype.on = function (evt, cb) {
+    
+  };
+    
+  /*
+   * RUNTIME LOOP
+   */
+  
+  Drive.prototype.render = function () {
+    //If we're not running and we haven't started, we shouldn't animate a frame:
+    if(!this.running || !this.started) return;
+    
+    //Request the next frame:
+    window.requestAnimationFrame(this.render);
+    
+    //TODO: Render loop
+  };
   
   
   /*
    * STATIC METHODS
    */
   
+  //Reuable NOP
+  Drive.nop = function (){};
+  
+  //Define a reusable animation for Drive.
   Drive.animation = function DriveAnimationDefinition () {
     
   };
