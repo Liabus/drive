@@ -77,3 +77,5 @@ We use RequestAnimationFrame to move elements along space based scroll position 
 - Enable option pass in an element that the scroll events will be captured for, and where the scrollbar will go. This is to allow multiple drive instances, as well as specifying the document.body for mouse wheel is (which is what IDEO does).
 - Apply position: relative to the parent.
 - Event system to listen to when things happen (scroll, render, etc.). This is a better approach than passing in functions.
+- From/To String (from: 'opacity: 0', to: 'opacity: 1') instead of requiring per-property definitions.
+- Are animations automatically relative to the element's timeline?

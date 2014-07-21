@@ -39,8 +39,20 @@ drive.add({
   },
   selector: '#cody-start',
   animations: [
-    //Use the scrollHeight animation from before:
-    'scrollHeight'
+    //Use the scrollHeight animation from before (auto-relative to self):
+    'scrollHeight',
+    //Fade in over the animations:
+    {
+      //Animation timelines are automatically relative to the element's timeline.
+      timeline: {
+        //NOTE: this is the exact same timeline as the element, and therefore is not actually required to define.
+        //We double-define it here for the sake of the spec.
+        start: 0,
+        end: 'last'
+      },
+      from: 'opacity: 0;',
+      to: 'opacity: 1;'
+    }
   ],
   //Children:
   elements: [
