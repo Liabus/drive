@@ -1,5 +1,20 @@
 #drive-next
 
+---
+
+#INVESTIGATION:
+
+I just spent some time experimenting with display modes. Something interesting
+that I observed is that optimal performance is achieved differently in browsers.
+We should probably make another mode called "auto" that will detect the browser
+and decide the mode for you (i.e. "display" for chrome, "opacity" for safari).
+We should also let users define their own function that will set the display
+function so that they don't have write an IIFE or other sort of logic.
+
+But really how much of an inconvenience is that? Not much by my records.
+
+---
+
 This entire library is unstable and relatively purpose built. A future version is being developed side-by-side with the current version, and will aim to solve some of the problems of the current library, while providing more flexibility and power.
 
 **Current phase:** Design
@@ -52,7 +67,7 @@ We use RequestAnimationFrame to move elements along space based scroll position 
 
 - Figure out how to support more flexible (better) timeline definitions (Drive's SPs are cool but not great.)
 - Custom functions in timeline. Figure out a mechanism for the recalculation of these. We don't want to run every frame, but want to allow them to hypothetically run more than once. Maybe default to on resize, and then give them some mechanism to get it run every frame if they're insane.
-  - Also, how do relatives to calculated timeline values resolve? 
+  - Also, how do relatives to calculated timeline values resolve?
 
 
 ###todo

@@ -92,7 +92,7 @@
 
     var paused = false;
     var destroyed = false;
-    
+
     //Implement the scrollbar
     if(options.scrollbar){
       //Append the scrollbar:
@@ -199,7 +199,7 @@
 
       //If we've destroyed the instance, don't continue animating it:
       if(destroyed) return;
-      
+
       requestAnimationFrame(animationLoop);
 
       if(paused) return;
@@ -293,14 +293,13 @@
         $body.off('mousedown');
         $body.off('mouseup');
         //Remove scrollbar:
-        $body.remove('.scrollbar');
+        $('.scrollbar').remove();
       },
       pause: function(){
         paused = true;
       },
       resume: function(){
         paused = false;
-        console.log('resuming');
       },
       scrollTo: function(el, add){
         add = add || 0;
